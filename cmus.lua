@@ -64,6 +64,16 @@ local function parse_cmus_status(status_str)
     return status
 end
 
+-- wrap table keys in brackets
+-- this is the vicious library convention
+local function viciousify(table)
+    vT = {}
+    for k, v in pairs(table) do 
+      vT["{" .. k .. "}"] = v 
+    end
+    return vT
+end
+
 -- {{{ Memory widget type
 local function worker(format)
 
@@ -75,9 +85,10 @@ local function worker(format)
     }
 
     -- defaults
-    local cmus = { 
-        ["{error}"]  = false,
-        ["{status}"] = "not running"
+    local status = { 
+        ["error"]           = false,
+        ["status"]          = "not running",
+        ["status_symbol"]   = status_symbols["stopped"]
     }
 
     local cmus_status_cmd   = "/usr/bin/cmus-remote -Q 2>&1"
@@ -87,34 +98,34 @@ local function worker(format)
 
     -- not found/executable
     if rs == nil or rs:find("No such file or directory") then
-        cmus["{error}"], cmus["{status}"] = true, "cmus not found"
-        return cmus
+        status["error"], status["status"] = true, "cmus not found"
+        return viciousify(status)
     end
 
-    if rs:find("cmus is not running") then return cmus end
+    if rs:find("cmus is not running") then return viciousify(status) end
 
     -- cmus is running, so get the status
     local status = parse_cmus_status(rs)
+    status["status_symbol"] = status_symbols[status["status"]]
 
-    -- note:  lua coerces strings to numbers automatically, and has *no
-    -- integers* ==> no integer division
-    elapsed_pct             = 100 * status["position"] / status["duration"]
-    remains_pct             = 100-elapsed_pct
-    cmus["{elapsed_pct}"]   = string.format("%d%%", elapsed_pct)
-    cmus["{remains_pct}"]   = string.format("%d%%", remains_pct)
-    cmus["{status_symbol}"] = status_symbols[status["status"]]
-    cmus["{song}"]          = join({status["artist"], status["album"], status["title"]}, SONGDELIM)
-    cmus["{CRS}"]           = join(collect( select({"continue", "repeat", "shuffle"}, 
+    if not (status["status"] == "stopped") then
+        -- note:  lua coerces strings to numbers automatically, and has *no
+        -- integers* ==> no integer division
+        elapsed_pct             = 100 * status["position"] / status["duration"]
+        remains_pct             = 100-elapsed_pct
+        status["elapsed_pct"]   = string.format("%d%%", elapsed_pct)
+        status["remains_pct"]   = string.format("%d%%", remains_pct)
+    end
+
+    status["song"] = join({status["artist"], status["album"], status["title"]}, SONGDELIM)
+    status["CRS"]  = join(collect( select({"continue", "repeat", "shuffle"}, 
                                     function(key) 
                                         return status[key] == "true" 
                                     end), 
                                         function(item) 
                                             return item:sub(1, 1):upper()
                                         end), "")
-
-    for k, v in pairs(status) do cmus["{" .. k .. "}"] = v end
-
-    return cmus
+    return viciousify(status)
 end
 
 -- }}}
