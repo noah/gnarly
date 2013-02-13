@@ -38,3 +38,11 @@ table.collect = function(source, func)
     for i,v in ipairs(source) do table.insert(result, func(v)) end
     return result
 end
+
+table.keys = function(table)
+    _k = {}
+    for k, v in ipairs(table) do
+      table.insert(_k, k)
+    end
+    return _k
+end

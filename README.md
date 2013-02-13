@@ -34,6 +34,10 @@ usually available fields (depending on track metadata)
     - date          - track year
     - track         - track number
 
+**gnarly.widgets.mdir**
+
+- Returns a table of `{maildir basename = count of new messages}`
+
 
 Usage
 =====

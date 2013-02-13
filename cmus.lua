@@ -111,13 +111,26 @@ local function worker(format)
     if not (status["status"] == "stopped") then
         -- note:  lua coerces strings to numbers automatically, and has *no
         -- integers* ==> no integer division
-        elapsed_pct             = 100 * status["position"] / status["duration"]
-        remains_pct             = 100-elapsed_pct
-        status["elapsed_pct"]   = string.format("%d%%", elapsed_pct)
-        status["remains_pct"]   = string.format("%d%%", remains_pct)
+        if tonumber(status["duration"]) < 0 then
+            -- most likely, we're playing a stream
+            status["elapsed_pct"]   = "∞"
+            status["remains_pct"]   = "∞"
+            -- TODO
+        else
+            elapsed_pct             = 100 * status["position"] / status["duration"]
+            remains_pct             = 100-elapsed_pct
+            status["elapsed_pct"]   = string.format("%d%%", elapsed_pct)
+            status["remains_pct"]   = string.format("%d%%", remains_pct)
+        end
     end
 
-    status["song"] = join({status["artist"], status["album"], status["title"]}, SONGDELIM)
+    status["song"] = join(collect( select({"artist", "album", "title"}, 
+                                    function(key) 
+                                        return status[key] ~= nil 
+                                    end), 
+                                        function(item)
+                                            return status[key]
+                                        end), SONGDELIM)
     status["CRS"]  = join(collect( select({"continue", "repeat", "shuffle"}, 
                                     function(key) 
                                         return status[key] == "true" 
