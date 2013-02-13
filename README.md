@@ -61,8 +61,24 @@ vicious.register(musicbox, gnarly.cmus,
                             T["{CRS}"]
                         )
   end, 2)
+
+vicious.register(mdirbox, gnarly.mdir, 
+    function(widget, mailboxes)
+
+      _t = {}
+      for k, v in pairs(mailboxes) do
+        table.insert(_t, "{" .. k .. " => " .. v .. "}")
+      end
+      return join(_t, " ")
+
+    end, 1, "/home/noah*/mail/noah*@*.com")
 ```
 
-That will produce a status line like the following:
+That will produce a cmus status line like the following:
 
     ♫ > Neil Young & Crazy Horse .. Ragged Glory .. F*!#In' Up 92% CR
+
+And will print out some maildir labels with associated unread message
+counts:
+
+    {@todo => 3} {work => 5} {amazon => 2}
