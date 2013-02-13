@@ -65,11 +65,15 @@ vicious.register(musicbox, gnarly.cmus,
 vicious.register(mdirbox, gnarly.mdir, 
     function(widget, mailboxes)
 
-      _t = {}
-      for k, v in pairs(mailboxes) do
-        table.insert(_t, "{" .. k .. " => " .. v .. "}")
+      if #mailboxes > 0 then
+          _t = {}
+          for k, v in pairs(mailboxes) do
+            table.insert(_t, "{" .. k .. " => " .. v .. "}")
+          end
+          return join(_t, " ")
+      else
+          return "No new mail."
       end
-      return join(_t, " ")
 
     end, 1, "/home/noah*/mail/noah*@*.com")
 ```
