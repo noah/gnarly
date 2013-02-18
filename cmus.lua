@@ -116,6 +116,7 @@ local function worker(format)
             status["elapsed_pct"]   = "∞"
             status["remains_pct"]   = "∞"
             -- TODO
+            status["stream"]        = true
         else
             elapsed_pct             = 100 * status["position"] / status["duration"]
             remains_pct             = 100-elapsed_pct
