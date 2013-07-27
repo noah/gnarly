@@ -16,19 +16,38 @@ local setmetatable = setmetatable
 local mdir = {}
 
 
+gnarly.util     = require("gnarly.util")
+local log=gnarly.util.log
+
 -- {{{ Maildir widget type
 local function worker(format, warg)
     if not warg then return end
 
     local mailboxes = {}
+    local f         = io.popen("ls " .. warg .. "/*/new/*|grep -v Junk\\/new")
 
-    local f = io.popen("ls " .. warg .. "/*/new/*|grep -v Junk\\/new")
-    for line in f:lines() do
-        name = line:match(".*/(.*)/new.*")
-        if mailboxes[name] == nil then mailboxes[name] = 0 end
-        mailboxes[name] = mailboxes[name] + 1 
+    if f then
+      for line in f:lines() do
+          name = line:match(".*/(.*)/new.*")
+
+          -- don't report any mail in INBOX newer than 5 minutes
+          -- (this mail probably hasn't been picked up by the filter yet)
+          skip = false
+          if name == "INBOX" then
+              local mtime   = io.popen("stat -c %Z " .. line):read("*l")
+              local now     = io.popen("date +%s"):read("*l")
+              -- log(line .. " " .. now-mtime)
+              if not (mtime == nil) and (now-mtime < 90) then
+                skip = true
+              end
+          end
+          if not skip then
+            if mailboxes[name] == nil then mailboxes[name] = 0 end
+            mailboxes[name] = mailboxes[name] + 1 
+          end
+      end
+      f:close()
     end
-    f:close()
 
     return mailboxes
 end

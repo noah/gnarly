@@ -132,6 +132,7 @@ local function worker(format)
                                         function(item)
                                             return status[key]
                                         end), SONGDELIM)
+
     status["CRS"]  = join(collect( select({"continue", "repeat", "shuffle"}, 
                                     function(key) 
                                         return status[key] == "true" 
@@ -139,6 +140,7 @@ local function worker(format)
                                         function(item) 
                                             return item:sub(1, 1):upper()
                                         end), "")
+
     return viciousify(status)
 end
 
