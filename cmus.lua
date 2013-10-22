@@ -129,7 +129,7 @@ local function worker(format)
                                     function(key) 
                                         return status[key] ~= nil 
                                     end), 
-                                        function(item)
+                                        function(key)
                                             return status[key]
                                         end), SONGDELIM)
 
