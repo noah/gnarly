@@ -24,7 +24,7 @@ local function worker(format, warg)
     if not warg then return end
 
     local mailboxes = {}
-    local f         = io.popen("ls " .. warg .. "/*/new/*|grep -v Junk\\/new")
+    local f         = io.popen("ls " .. warg .. "/*/new/* 2>/dev/null |grep -v Junk\\/new")
 
     if f then
       for line in f:lines() do
