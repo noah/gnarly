@@ -57,7 +57,6 @@ end
 -- Lua implementation of PHP scandir function
 -- ~ http://stackoverflow.com/questions/5303174/get-list-of-directory-in-a-lua
 function scandir(d)
-  log(d)
   local i, t = 0, {}
   for path in io.popen('ls "' .. d .. '"'):lines() do
     i = i + 1
