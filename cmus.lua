@@ -47,7 +47,9 @@ local function parse_cmus_status(status_str)
         ["track"]       = "tag tracknumber",
         ["continue"]    = "set continue",
         ["repeat"]      = "set repeat",
-        ["shuffle"]     = "set shuffle"
+        ["shuffle"]     = "set shuffle",
+        -- requires cmus 2.6.0+
+        ["stream"]      = "stream"
     }
     for my_key, cmus_prefix in pairs(key_map) do
       -- the format of the cmus-remote -Q output is:
@@ -108,15 +110,16 @@ local function worker(format)
     local status = parse_cmus_status(rs)
     status["status_symbol"] = status_symbols[status["status"]]
 
+    streaming = not (status["stream"] == "")
+
     if not (status["status"] == "stopped") then
         -- note:  lua coerces strings to numbers automatically, and has *no
         -- integers* ==> no integer division
-        if tonumber(status["duration"]) < 0 then
+        --if tonumber(status["duration"]) < 0 then
             -- most likely, we're playing a stream
+        if streaming then
             status["elapsed_pct"]   = "∞"
             status["remains_pct"]   = "∞"
-            -- TODO
-            status["stream"]        = true
         else
             elapsed_pct             = 100 * status["position"] / status["duration"]
             remains_pct             = 100-elapsed_pct
@@ -125,13 +128,18 @@ local function worker(format)
         end
     end
 
-    status["song"] = join(collect( select({"artist", "album", "title"}, 
+    if streaming then
+        status["song"] = status["title"] .. " / " .. status["stream"]
+    else
+        status["song"] = join(collect( select({"artist", "album", "title"}, 
                                     function(key) 
                                         return status[key] ~= nil 
                                     end), 
                                         function(key)
                                             return status[key]
                                         end), SONGDELIM)
+    end
+
 
     status["CRS"]  = join(collect( select({"continue", "repeat", "shuffle"}, 
                                     function(key) 
