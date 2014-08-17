@@ -59,6 +59,8 @@ local function worker(format)
     local ch = syscall('d='..SYSBASE..'; echo "scale=2; `cat "$d/charge_now"`/`cat "$d/charge_full"`*100" | bc')
     status['status']    = st
     status['charge']    = ch
+    if status['status'] == "" then status['status'] = 'N/A' end
+    if status['charge'] == "" then status['charge'] = 0 end
     return viciousify(status)
 end
 
