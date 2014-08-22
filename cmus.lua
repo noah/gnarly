@@ -120,24 +120,20 @@ local function worker(format)
         if streaming then
             status["elapsed_pct"]   = "∞"
             status["remains_pct"]   = "∞"
+            status["song"] = status["title"] .. " / " .. status["stream"]
         else
             elapsed_pct             = 100 * status["position"] / status["duration"]
             remains_pct             = 100-elapsed_pct
             status["elapsed_pct"]   = string.format("%d%%", elapsed_pct)
             status["remains_pct"]   = string.format("%d%%", remains_pct)
-        end
-    end
-
-    if streaming then
-        status["song"] = status["title"] .. " / " .. status["stream"]
-    else
-        status["song"] = join(collect( select({"artist", "album", "title"}, 
+            status["song"] = join(collect( select({"artist", "album", "title"}, 
                                     function(key) 
                                         return status[key] ~= nil 
                                     end), 
                                         function(key)
                                             return status[key]
                                         end), SONGDELIM)
+        end
     end
 
 
