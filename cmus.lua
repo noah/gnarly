@@ -110,7 +110,7 @@ local function worker(format)
     local status = parse_cmus_status(rs)
     status["status_symbol"] = status_symbols[status["status"]]
 
-    streaming = not (status["stream"] == "")
+    streaming = not (status["stream"] == nil)
 
     if not (status["status"] == "stopped") then
         -- note:  lua coerces strings to numbers automatically, and has *no
