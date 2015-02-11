@@ -23,11 +23,13 @@ local function worker()
     for _ in pacf:lines() do
       pacman = pacman + 1
     end
-    for _ in aurf:lines() do
-      aur = aur + 1
+    if aurf ~= nil then
+            for _ in aurf:lines() do
+              aur = aur + 1
+            end
+            pacf:close()
+            aurf:close()
     end
-    pacf:close()
-    aurf:close()
     return {
       ["pacman"] = pacman,
       ["aur"] = aur,

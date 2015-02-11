@@ -95,8 +95,11 @@ local function worker(format)
 
     local cmus_status_cmd   = "/usr/bin/cmus-remote -Q 2>&1"
     local f                 = popen(cmus_status_cmd)
-    local rs                = f:read("*all")
-    f:close()
+    local rs
+    if f ~= nil then
+            rs = f:read("*all")
+            f:close()
+    end
 
     -- not found/executable
     if rs == nil or rs:find("No such file or directory") then

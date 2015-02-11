@@ -45,8 +45,11 @@ end
 -- TODO put this in UTIL
 local function syscall(cmd)
     local f      = popen(cmd)
-    local rs     = f:read("*all")
-    f:close()
+    local rs
+    if f ~= nil then
+            rs = f:read("*all")
+            f:close()
+    end
     return rs
 end
 
