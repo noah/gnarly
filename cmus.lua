@@ -95,14 +95,9 @@ local function worker(format)
 
     local cmus_status_cmd   = "/usr/bin/cmus-remote -Q 2>&1"
     local f                 = popen(cmus_status_cmd)
-<<<<<<< HEAD
     local rs
     if f ~= nil then
             rs = f:read("*all")
-=======
-    if not f == nil then
-            local rs                = f:read("*all")
->>>>>>> 89ec8762124ca0c9aff9747e88b346a255aec73d
             f:close()
     end
 
