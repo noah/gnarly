@@ -46,10 +46,8 @@ end
 local function syscall(cmd)
     local f      = popen(cmd)
     local rs     = '';
-    if not f == nil then
-            rs     = f:read("*all")
-            f:close()
-    end
+    rs     = f:read("*all")
+    f:close()
 
     return rs
 end
