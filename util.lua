@@ -2,19 +2,27 @@ local string    = string
 local io        = io
 local table     = table
 local ipairs    = ipairs
+local type      = type
 
 
 local naughty = require("naughty")
 
 module("gnarly.util")
 
-function log(str)
-  if str then
+function log(d)
+  if d then
+    local nt = ""
+    local td = type(d)
+    if td == 'string' then
+        nt = d
+    else
+        nt = 'object of type: ' .. td
+    end
     naughty.notify({ 
       preset = naughty.config.presets.normal, 
-      title = "Log", text = str .. "\n",
+      title = "Log", text = nt .. "\n",
       timeout = 0})
-    io.stderr:write(str)
+    io.stderr:write(nt)
     io.stderr:write("\n")
   end
   io.flush()

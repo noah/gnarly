@@ -24,7 +24,8 @@ local function worker(format, warg)
     if not warg then return end
 
     local mailboxes = {}
-    local f         = io.popen("ls " .. warg .. "/*/new/* 2>/dev/null |grep -v Junk\\/new")
+    local cmd = "ls " .. warg .. "/*/new/* 2>/dev/null |grep -v Junk\\/new"
+    local f         = io.popen(cmd)
 
     if f then
       for line in f:lines() do
@@ -34,11 +35,14 @@ local function worker(format, warg)
           -- (this mail probably hasn't been picked up by the filter yet)
           skip = false
           if name == "INBOX" then
-              local mtime   = io.popen("stat -c %Z " .. line):read("*l")
-              local now     = io.popen("date +%s"):read("*l")
-              -- log(line .. " " .. now-mtime)
-              if not (mtime == nil) and (now-mtime < 90) then
-                skip = true
+              local stat = io.popen("stat -c %Z " .. line)
+              if stat ~= nil then
+                      local mtime = stat:read("*l")
+                      local now     = io.popen("date +%s"):read("*l")
+                      -- log(line .. " " .. now-mtime)
+                      if (mtime ~= nil) and (now-mtime < 90) then
+                        skip = true
+                      end
               end
           end
           if not skip then

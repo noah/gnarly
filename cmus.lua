@@ -26,6 +26,8 @@ local select        = table.select
 local collect       = table.collect
 local log           = util.log
 
+
+local floor = math.floor
 module("gnarly.cmus")
 
 local cmus = {}
@@ -95,8 +97,11 @@ local function worker(format)
 
     local cmus_status_cmd   = "/usr/bin/cmus-remote -Q 2>&1"
     local f                 = popen(cmus_status_cmd)
-    local rs                = f:read("*all")
-    f:close()
+    local rs
+    if f ~= nil then
+            rs = f:read("*all")
+            f:close()
+    end
 
     -- not found/executable
     if rs == nil or rs:find("No such file or directory") then
@@ -124,8 +129,8 @@ local function worker(format)
         else
             elapsed_pct             = 100 * status["position"] / status["duration"]
             remains_pct             = 100-elapsed_pct
-            status["elapsed_pct"]   = string.format("%d%%", elapsed_pct)
-            status["remains_pct"]   = string.format("%d%%", remains_pct)
+            status["elapsed_pct"]   = string.format("%d%%", floor(elapsed_pct))
+            status["remains_pct"]   = string.format("%d%%", floor(remains_pct))
             status["song"] = join(collect( select({"artist", "album", "title"}, 
                                     function(key) 
                                         return status[key] ~= nil 
