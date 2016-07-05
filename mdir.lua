@@ -38,11 +38,14 @@ local function worker(format, warg)
               local stat = io.popen("stat -c %Z " .. line)
               if stat ~= nil then
                       local mtime = stat:read("*l")
-                      local now     = io.popen("date +%s"):read("*l")
+                      local n     = io.popen("date +%s")
+                      local now   = n:read("*l")
+                      n:close()
                       -- log(line .. " " .. now-mtime)
                       if (mtime ~= nil) and (now-mtime < 90) then
                         skip = true
                       end
+                    stat:close()
               end
           end
           if not skip then
