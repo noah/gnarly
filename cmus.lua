@@ -28,9 +28,8 @@ local log           = util.log
 
 
 local floor = math.floor
-module("gnarly.cmus")
 
-local cmus = {}
+gnarly.cmus = {}
 
 local function parse_cmus_status(status_str)
     local status = {}
@@ -156,4 +155,4 @@ end
 -- }}}
 
 -- a little cargo-cult never hurt anybody ...
-return setmetatable(cmus, { __call = function(_, ...) return worker(...) end })
+return setmetatable(gnarly.cmus, { __call = function(_, ...) return worker(...) end })

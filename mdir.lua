@@ -13,7 +13,7 @@ local setmetatable = setmetatable
 
 -- Mdir: provides the number of new and unread messages in Maildir structures/dirs
 -- gnarly.widgets.mdir
-local mdir = {}
+gnarly.mdir = {}
 
 
 gnarly.util     = require("gnarly.util")
@@ -57,4 +57,4 @@ local function worker(format, warg)
 end
 -- }}}
 
-return setmetatable(mdir, { __call = function(_, ...) return worker(...) end })
+return setmetatable(gnarly.mdir, { __call = function(_, ...) return worker(...) end })

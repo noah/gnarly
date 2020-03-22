@@ -4,12 +4,10 @@ local table     = table
 local ipairs    = ipairs
 local type      = type
 
-
 local naughty = require("naughty")
+local gnarly = require("gnarly")
 
-module("gnarly.util")
-
-function log(d)
+function gnarly.log(d)
   if d then
     local nt = ""
     local td = type(d)
@@ -20,7 +18,7 @@ function log(d)
     end
     naughty.notify({ 
       preset = naughty.config.presets.normal, 
-      title = "Log", text = nt .. "\n",
+      title = "Log", text = "'" .. nt .. "'" .. "\n",
       timeout = 0})
     io.stderr:write(nt)
     io.stderr:write("\n")
@@ -64,7 +62,7 @@ end
 
 -- Lua implementation of PHP scandir function
 -- ~ http://stackoverflow.com/questions/5303174/get-list-of-directory-in-a-lua
-function scandir(d)
+function gnarly.scandir(d)
   local i, t = 0, {}
   for path in io.popen('ls "' .. d .. '"'):lines() do
     i = i + 1
@@ -72,3 +70,5 @@ function scandir(d)
   end
   return t
 end
+
+return gnarly

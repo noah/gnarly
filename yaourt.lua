@@ -8,10 +8,9 @@ local io = { popen = io.popen }
 local setmetatable = setmetatable
 -- }}}
 
-module("gnarly.yaourt")
 
 -- Pkg: provides number of pending updates on UNIX systems
-local yaourt = {}
+gnarly.yaourt = {}
 
 
 -- {{{ Packages widget type
@@ -37,4 +36,4 @@ local function worker()
 end
 -- }}}
 
-return setmetatable(yaourt, { __call = function(_, ...) return worker(...) end })
+return setmetatable(gnarly.yaourt, { __call = function(_, ...) return worker(...) end })

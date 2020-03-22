@@ -28,9 +28,9 @@ local util          = require("gnarly.util")
 -- local collect       = table.collect
 local log           = util.log
 
-module("gnarly.battery")
+-- module("gnarly.battery")
 
-local battery = {}
+local gnarly.battery = {}
 
 -- wrap table keys in brackets
 -- this is the vicious library convention
@@ -57,17 +57,17 @@ end
 local function worker(format)
  
     local status        = {};
-    local SYSBASE       = "/sys/class/power_supply/BAT0/"
-    local st = syscall('cat ' .. SYSBASE .. 'status' .. '| tr -d "\n"')
-    local ch = syscall('d='..SYSBASE..'; echo "scale=2; `cat "$d/charge_now"`/`cat "$d/charge_full"`*100" | bc')
-    status['status']    = st
-    status['charge']    = ch
-    if status['status'] == "" then status['status'] = 'N/A' end
-    if status['charge'] == "" then status['charge'] = 0 end
+    -- local SYSBASE       = "/sys/class/power_supply/BAT0/"
+    -- local st = syscall('cat ' .. SYSBASE .. 'status' .. '| tr -d "\n"')
+    -- local ch = syscall('d='..SYSBASE..'; echo "scale=2; `cat "$d/charge_now"`/`cat "$d/charge_full"`*100" | bc')
+    -- status['status']    = st
+    -- status['charge']    = ch
+    -- if status['status'] == "" then status['status'] = 'N/A' end
+    -- if status['charge'] == "" then status['charge'] = 0 end
     return viciousify(status)
 end
 
 -- }}}
 
 -- a little cargo-cult never hurt anybody ...
-return setmetatable(battery, { __call = function(_, ...) return worker(...) end })
+return setmetatable(gnarly.battery, { __call = function(_, ...) return worker(...) end })
